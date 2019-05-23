@@ -67,7 +67,16 @@ function _parse(stream, ptr) {
             next_is_value = false;  // Make sure the next string is interpreted as a key.
 
             var parsed = _parse(stream, i + 1);
-            deserialized[laststr] = parsed[0];
+            
+            // Check to see if the current key already exists, and if it does then merge all the children otherwise just overwrite
+            if(deserialized[laststr]) {
+                for(let key in parsed[0]) {
+                    deserialized[laststr][key] = parsed[0][key]
+                }
+            } else {
+                deserialized[laststr] = parsed[0];
+            }
+            
             i = parsed[1];
         }
         else if (c === NODE_CLOSE) {
